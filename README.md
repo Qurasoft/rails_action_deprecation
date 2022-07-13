@@ -35,6 +35,34 @@ To enable deprecation and sunset in your controller, simply use the provided `de
 
 Both functions take exactly the same parameters. The first is a DateTime describing the date of deprecation or sunset. By default the deprecation or sunset is set for any action in the controller. To limit this the `only:` parameter can be used exactly as it is available for the rails controller hooks.
 
+Example with deprecated or sunset `create` and `destroy` actions:
+```ruby
+class ExampleController < ActionController::Base
+  deprecate_endpoint DateTime.new(2022, 07, 01, 12, 34, 56), only: [:create, :destroy]
+  sunset_endpoint DateTime.new(2023, 07, 01), only: [:destroy]
+
+  def index
+    render json: ['element1', 'element2']
+  end
+
+  def show
+    render json: 'element1'
+  end
+
+  def create
+    render json: 'newElement'
+  end
+
+  def update
+    render json: 'changedElement'
+  end
+
+  def destroy
+    head :no_content
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
