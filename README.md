@@ -31,14 +31,22 @@ Or install it yourself as:
 
 ## Usage
 
-To enable deprecation and sunset in your controller, simply use the provided `deprecate_endpoint` and `sunset_endpoint` functions. These register an `after_action` hook that sets the relevant HTTP headers and outputs a message via `ActiveSupport::Deprecation`.
+To enable deprecation and sunset in your controller, simply use the provided `deprecate_endpoint` and `sunset_endpoint` functions.
+These register an `after_action` hook that sets the relevant HTTP headers and outputs a message via `ActiveSupport::Deprecation`.
 
-Both functions take exactly the same parameters. The first is a DateTime describing the date of deprecation or sunset. By default the deprecation or sunset is set for any action in the controller. To limit this the `only:` parameter can be used exactly as it is available for the rails controller hooks.
+Both functions take exactly the same parameters.
+The first is a DateTime describing the date of deprecation or sunset.
+By default the deprecation or sunset is set for any action in the controller.
+To limit this the `only:` parameter can be used exactly as it is available for the rails controller hooks.
 
-Example with deprecated or sunset `create` and `destroy` actions:
+If you want to make more information available to your users, the `link:` parameter must be specified with a percent encoded URL.
+This URL will be part of the response's Link HTTP header with the relation `deprecation` or respectively `sunset`.
+
+Example with deprecated and/or sunset `create` and `destroy` actions:
 ```ruby
 class ExampleController < ActionController::Base
-  deprecate_endpoint DateTime.new(2022, 07, 01, 12, 34, 56), only: [:create, :destroy]
+  deprecate_endpoint DateTime.new(2022, 07, 01, 12, 34, 56), only: [:create]
+  deprecate_endpoint DateTime.new(2022, 07, 01, 12, 34, 56), only: [:destroy], link: "https://github.com/Qurasoft"
   sunset_endpoint DateTime.new(2023, 07, 01), only: [:destroy]
 
   def index
@@ -65,13 +73,16 @@ end
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/qurasoft/rails_action_deprecation. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/qurasoft/rails_action_deprecation.
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

@@ -1,9 +1,12 @@
 require "spec_helper"
 
-RSpec.describe MixedController, type: :controller do
-  describe "with mixed deprecation and sunset headers" do
+RSpec.describe LinkController, type: :controller do
+  describe "with mixed deprecation and sunset headers and a specified link" do
     let(:sunset_http_date) {"Fri, 01 Jul 2022 12:34:56 GMT"}
     let(:deprecation_http_date) {"Sat, 02 Jul 2022 12:34:56 GMT"}
+
+    let(:sunset_link) {"https://github.com/Qurasoft/teams_connector"}
+    let(:deprecation_link) {"https://github.com/Qurasoft/rails_action_deprecation"}
 
     [
       { name: :index, http_method: :get, params: {} }
@@ -20,12 +23,18 @@ RSpec.describe MixedController, type: :controller do
           expect(subject.headers).to include 'Deprecation'
         end
 
-        it 'will not have a Link HTTP Header' do
-          expect(subject.headers).not_to include 'Link'
+        it 'will have a Link HTTP Header' do
+          expect(subject.headers).to include 'Link'
         end
 
         it 'will contain an IMF-fixdate in the Deprecation HTTP Header' do
           expect(subject.headers['Deprecation']).to eql deprecation_http_date
+        end
+
+        it 'will contain the URL and correct relation in the Link HTTP Header' do
+          link_elements = subject.headers['Link'].split ";"
+          expect(link_elements.size).to eql 2
+          expect(link_elements.map { |e| e.strip }).to eql %W[<#{deprecation_link}> rel=\"deprecation\"]
         end
       end
 
@@ -47,12 +56,22 @@ RSpec.describe MixedController, type: :controller do
           expect(subject.headers).to include 'Deprecation'
         end
 
-        it 'will not have a Link HTTP Header' do
-          expect(subject.headers).not_to include 'Link'
+        it 'will have a Link HTTP Header' do
+          expect(subject.headers).to include 'Link'
+        end
+
+        it 'will contain an IMF-fixdate in the Sunset HTTP Header' do
+          expect(subject.headers['Sunset']).to eql sunset_http_date
         end
 
         it 'will contain an IMF-fixdate in the Deprecation HTTP Header' do
           expect(subject.headers['Deprecation']).to eql deprecation_http_date
+        end
+
+        it 'will contain the URLs and correct relations in the Link HTTP Header' do
+          header_links = subject.headers['Link'].split ","
+          expect(header_links.size).to eql 2
+          expect(header_links.map { |link| link.split(";").map { |e| e.strip } }).to contain_exactly %W[<#{deprecation_link}> rel=\"deprecation\"], %W[<#{sunset_link}> rel=\"sunset\"]
         end
       end
 
@@ -73,12 +92,18 @@ RSpec.describe MixedController, type: :controller do
           expect(subject.headers).not_to include 'Deprecation'
         end
 
-        it 'will not have a Link HTTP Header' do
-          expect(subject.headers).not_to include 'Link'
+        it 'will have a Link HTTP Header' do
+          expect(subject.headers).to include 'Link'
         end
 
         it 'will contain an IMF-fixdate in the Sunset HTTP Header' do
           expect(subject.headers['Sunset']).to eql sunset_http_date
+        end
+
+        it 'will contain the URL and correct relation in the Link HTTP Header' do
+          link_elements = subject.headers['Link'].split ";"
+          expect(link_elements.size).to eql 2
+          expect(link_elements.map { |e| e.strip }).to eql %W[<#{sunset_link}> rel=\"sunset\"]
         end
       end
 
