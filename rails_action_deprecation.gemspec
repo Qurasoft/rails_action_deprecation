@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Lucas Keune"]
   spec.email = ["lucas.keune@qurasoft.de"]
 
-  spec.summary = %q{Simple connector to send messages and cards to Microsoft Teams channels}
-  spec.description = %q{Send templated messages or adaptive cards to Microsoft Teams channels}
+  spec.summary = %q{Mark resources and endpoints as deprecated}
+  spec.description = %q{Mark specific routes or actions in your Rails project as deprecated or sunset. You can specify the date of deprecation or sunset and provide additional resources as links to your users.}
   spec.homepage = "https://github.com/Qurasoft/rails_action_deprecation"
   spec.license = "MIT"
 
