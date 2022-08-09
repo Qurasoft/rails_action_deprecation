@@ -1,5 +1,9 @@
 # Rails Action Deprecation Changelog
 
+0.2.1
+---
+- Fix gem description and summary in gemspec
+
 0.2.0
 ---
 - Add link option to *_endpoint functions. This allows users to provide additional information at the specified URL 
